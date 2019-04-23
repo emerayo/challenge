@@ -1,6 +1,6 @@
 # Challenge
 
-**TODO: Add description**
+[![Codeship Status for emerayo/challenge](https://app.codeship.com/projects/3ab3b4a0-483f-0137-a8b9-32f2faa68042/status?branch=master)](https://app.codeship.com/projects/337799)
 
 ## Installation
 
