@@ -7,7 +7,8 @@ defmodule Challenge.MixProject do
       version: "0.1.0",
       elixir: "~> 1.8",
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(), 
+      aliases: aliases()
     ]
   end
 
@@ -22,7 +23,16 @@ defmodule Challenge.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
+      {:ecto, "~> 2.2"},
+      {:postgrex, "~> 0.11"},
       {:credo, "~> 1.0.0", only: [:dev, :test], runtime: false}
+    ]
+  end
+
+  defp aliases do
+    [
+      "ecto.setup": ["ecto.create", "ecto.migrate"],
+      "ecto.reset": ["ecto.drop", "ecto.setup"]
     ]
   end
 end
