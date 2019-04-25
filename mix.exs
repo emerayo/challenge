@@ -25,6 +25,8 @@ defmodule Challenge.MixProject do
     [
       {:ecto, "~> 2.2"},
       {:postgrex, "~> 0.11"},
+      {:plug_cowboy, "~> 2.0"},
+      {:poison, "~> 3.1"},
       {:credo, "~> 1.0.0", only: [:dev, :test], runtime: false}
     ]
   end
