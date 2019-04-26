@@ -1,6 +1,7 @@
 defmodule Challenge.RouterTest do
   use ExUnit.Case, async: true
   use Plug.Test
+  alias Challenge.{Router, Router}
 
   @opts Challenge.Router.init([])
 
@@ -9,7 +10,7 @@ defmodule Challenge.RouterTest do
     conn = conn(:get, "/")
 
     # Invoke the plug
-    conn = Challenge.Router.call(conn, @opts)
+    conn = Router.call(conn, @opts)
 
     # Assert the response and status
     assert conn.state == :sent
@@ -22,7 +23,7 @@ defmodule Challenge.RouterTest do
     conn = conn(:get, "/fail")
 
     # Invoke the plug
-    conn = Challenge.Router.call(conn, @opts)
+    conn = Router.call(conn, @opts)
 
     # Assert the response
     assert conn.status == 404
