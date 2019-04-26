@@ -17,10 +17,25 @@ defmodule Challenge.Router do
     render_json(conn, 200, %{response: "Welcome to our Bank API"})
   end
 
-  # A catchall route, 'match' will match no matter the request method,
-  # so a response is always returned, even if there is no route to match.
-  match _ do
-    render_json(conn, 404, %{error: "oops... Nothing here"})
+  # Handle incoming events, if the payload is the right shape, process the
+  # events, otherwise return an error.
+  post "/sign_up" do
+    {status, body} =
+      case conn.body_params do
+        %{"account" => account} -> {200, sing_up(account)}
+        _ -> {422, missing_account()}
+      end
+
+    send_resp(conn, status, body)
+  end
+
+  defp sing_up(account) do
+    # Do some processing on a list of events
+    Poison.encode!(%{response: "Received account!"})
+  end
+
+  defp missing_account do
+    Poison.encode!(%{error: "Expected Payload: { 'account': {...} }"})
   end
 
   defp render_json(conn, status, data) do
@@ -29,5 +44,11 @@ defmodule Challenge.Router do
     conn
     |> put_resp_content_type("application/json")
     |> send_resp((status || 200), body)
+  end
+
+  # A catchall route, 'match' will match no matter the request method,
+  # so a response is always returned, even if there is no route to match.
+  match _ do
+    render_json(conn, 404, %{error: "oops... Nothing here"})
   end
 end

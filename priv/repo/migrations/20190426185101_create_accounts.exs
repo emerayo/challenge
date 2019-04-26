@@ -6,7 +6,7 @@ defmodule Challenge.Repo.Migrations.CreateAccounts do
       add(:encrypted_password, :string, null: false)
       add(:email, :string)
 
-      timestamps
+      timestamps()
     end
 
     create(unique_index(:accounts, [:email], name: :unique_emails))
