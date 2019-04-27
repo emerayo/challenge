@@ -4,6 +4,7 @@ defmodule Challenge.Account do
   alias Challenge.{Account, Repo}
 
   schema "accounts" do
+    field(:balance, :decimal, default: Decimal.new(1000))
     field(:email, :string)
     field(:encrypted_password, :string)
     field(:password, :string, virtual: true)
