@@ -20,14 +20,14 @@ defmodule Challenge.RouterTest do
 
   test "it returns 200 with a valid payload" do
     # Create a test connection
-    conn = conn(:post, "/sign_up", %{account: %{}})
+    conn = conn(:post, "/sign_up", %{email: "email@email.com", password: "1234"})
 
     # Invoke the plug
     conn = Router.call(conn, @opts)
 
     # Assert the response
-    assert conn.status == 200
-    assert conn.resp_body == Poison.encode!(%{response: "Received account!"})
+    assert conn.status == 201
+    assert conn.resp_body == Poison.encode!(%{response: "Account created, the number is 1"})
   end
 
   test "it returns 422 with an invalid payload" do

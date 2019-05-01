@@ -7,8 +7,7 @@ defmodule Challenge.Application do
   def start(_type, _args) do
     # List all child processes to be supervised
     children = [
-      {Plug.Cowboy, scheme: :http, plug: Challenge.Router,
-                    options: [port: Application.fetch_env!(:challenge, :port)]},
+      {Plug.Cowboy, scheme: :http, plug: Challenge.Router},
       Challenge.Repo
     ]
     opts = [strategy: :one_for_one, name: Challenge.Supervisor]

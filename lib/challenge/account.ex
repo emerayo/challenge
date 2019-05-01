@@ -12,9 +12,24 @@ defmodule Challenge.Account do
     timestamps()
   end
 
-  def changeset(account, params \\ :empty) do
+  def registration_changeset(account, params) do
     account
     |> cast(params, [:email, :encrypted_password])
     |> validate_required([:email, :encrypted_password])
+    |> unique_constraint(:email)
+  end
+
+  def sign_up(params) do
+    %Account{}
+    |> Account.registration_changeset(params)
+    |> Repo.insert()
+  end
+
+  def changeset_error_to_string(changeset) do
+    Ecto.Changeset.traverse_errors(changeset, fn {msg, opts} ->
+      Enum.reduce(opts, msg, fn {key, value}, acc ->
+        String.replace(acc, "%{#{key}}", to_string(value))
+      end)
+    end)
   end
 end

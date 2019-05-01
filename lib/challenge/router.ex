@@ -4,12 +4,25 @@ defmodule Challenge.Router do
   matching routes, and dispatching responses.
   """
 
-  use Plug.Router
+  alias Challenge.Account
 
-  plug(Plug.Logger)
-  plug(:match)
-  plug(:dispatch)
-  plug(Plug.Parsers, parsers: [:json], json_decoder: Poison)
+  use Plug.Router
+  require Logger
+
+  plug Plug.Logger
+  # NOTE: The line below is only necessary if you care about parsing JSON
+  plug Plug.Parsers, parsers: [:json], json_decoder: Poison
+  plug :match
+  plug :dispatch
+
+  def init(options) do
+    options
+  end
+
+  def start_link do
+    port = Application.fetch_env!(:challenge, :port)
+    {:ok, _} = Plug.Adapters.Cowboy.http(__MODULE__, [], port: port)
+  end
 
   # A simple route to test that the server is up
   # Note, all routes must return a connection as per the Plug spec.
@@ -22,16 +35,22 @@ defmodule Challenge.Router do
   post "/sign_up" do
     {status, body} =
       case conn.body_params do
-        %{"account" => account} -> {200, sing_up(account)}
+        %{"email" => email, "password" => password} -> sing_up(email, password)
         _ -> {422, missing_account()}
       end
 
     send_resp(conn, status, body)
   end
 
-  defp sing_up(account) do
-    # Do some processing on a list of events
-    Poison.encode!(%{response: "Received account!"})
+  defp sing_up(email, password) do
+    hash = %{email: email, encrypted_password: password}
+    {status, body} =
+      case Account.sign_up(hash) do
+        {:ok, record}       -> {201, %{response: "Account created, the number is #{record.id}"}}
+        {:error, changeset} -> {404, %{errors: Account.changeset_error_to_string(changeset)}}
+      end
+
+    {status, Poison.encode!(body)}
   end
 
   defp missing_account do
