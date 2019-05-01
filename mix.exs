@@ -34,7 +34,8 @@ defmodule Challenge.MixProject do
   defp aliases do
     [
       "ecto.setup": ["ecto.create", "ecto.migrate"],
-      "ecto.reset": ["ecto.drop", "ecto.setup"]
+      "ecto.reset": ["ecto.drop", "ecto.setup"],
+      tests: ["ecto.drop --quiet", "ecto.create --quiet", "ecto.migrate --quiet", "ecto.migrate", "test"]
     ]
   end
 end
