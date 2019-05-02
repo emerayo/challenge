@@ -1,7 +1,8 @@
 defmodule Challenge.Account do
   use Ecto.Schema
   import Ecto.Changeset
-  alias Challenge.{Account, Repo}
+  alias Challenge.Account
+  alias Challenge.Repo
 
   schema "accounts" do
     field(:balance, :decimal, default: Decimal.new(1000))
@@ -16,7 +17,7 @@ defmodule Challenge.Account do
     account
     |> cast(params, [:email, :encrypted_password])
     |> validate_required([:email, :encrypted_password])
-    |> unique_constraint(:email)
+    |> unique_constraint(:email, name: :unique_emails)
   end
 
   def sign_up(params) do
