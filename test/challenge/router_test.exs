@@ -1,7 +1,9 @@
 defmodule Challenge.RouterTest do
   use ExUnit.Case, async: true
   use Plug.Test
-  alias Challenge.{Router, Router}
+  alias Challenge.Router
+  alias Challenge.Account
+  alias Challenge.Repo
 
   @opts Challenge.Router.init([])
 
@@ -25,9 +27,12 @@ defmodule Challenge.RouterTest do
     # Invoke the plug
     conn = Router.call(conn, @opts)
 
+    # Find the created account
+    created_account = Repo.get_by Account, %{email: "email@email.com", encrypted_password: "1234"}
+
     # Assert the response
     assert conn.status == 201
-    assert conn.resp_body == Poison.encode!(%{response: "Account created, the number is 1"})
+    assert conn.resp_body == Poison.encode!(%{response: "Account created, the number is #{created_account.id}"})
   end
 
   test "it returns 422 with an invalid payload" do
