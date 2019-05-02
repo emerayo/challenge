@@ -40,7 +40,7 @@ defmodule Challenge.Router do
         _ -> {422, missing_account()}
       end
 
-    send_resp(conn, status, body)
+    render_json(conn, status, body)
   end
 
   defp sing_up(email, password) do
@@ -51,11 +51,11 @@ defmodule Challenge.Router do
         {:error, changeset} -> {404, %{errors: Account.changeset_error_to_string(changeset)}}
       end
 
-    {status, Poison.encode!(body)}
+    {status, body}
   end
 
   defp missing_account do
-    Poison.encode!(%{error: "Expected Payload: { 'account': {...} }"})
+    %{error: "Expected Payload: { 'account': {...} }"}
   end
 
   defp render_json(conn, status, data) do
