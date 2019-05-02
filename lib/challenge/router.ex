@@ -5,6 +5,7 @@ defmodule Challenge.Router do
   """
 
   alias Challenge.Account
+  alias Plug.Adapters.Cowboy
 
   use Plug.Router
   require Logger
@@ -21,7 +22,7 @@ defmodule Challenge.Router do
 
   def start_link do
     port = Application.fetch_env!(:challenge, :port)
-    {:ok, _} = Plug.Adapters.Cowboy.http(__MODULE__, [], port: port)
+    {:ok, _} = Cowboy.http(__MODULE__, [], port: port)
   end
 
   # A simple route to test that the server is up

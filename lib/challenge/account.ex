@@ -1,8 +1,13 @@
 defmodule Challenge.Account do
+  @moduledoc """
+  Schema responsible for handling Account's data
+  """
+
   use Ecto.Schema
   import Ecto.Changeset
   alias Challenge.Account
   alias Challenge.Repo
+  alias Ecto.Changeset
 
   schema "accounts" do
     field(:balance, :decimal, default: Decimal.new(1000))
@@ -27,7 +32,7 @@ defmodule Challenge.Account do
   end
 
   def changeset_error_to_string(changeset) do
-    Ecto.Changeset.traverse_errors(changeset, fn {msg, opts} ->
+    Changeset.traverse_errors(changeset, fn {msg, opts} ->
       Enum.reduce(opts, msg, fn {key, value}, acc ->
         String.replace(acc, "%{#{key}}", to_string(value))
       end)

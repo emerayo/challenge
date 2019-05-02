@@ -1,9 +1,9 @@
 defmodule Challenge.RouterTest do
   use ExUnit.Case, async: true
   use Plug.Test
-  alias Challenge.Router
   alias Challenge.Account
   alias Challenge.Repo
+  alias Challenge.Router
 
   @opts Challenge.Router.init([])
 
