@@ -35,7 +35,7 @@ defmodule Challenge.RouterTest do
     assert conn.resp_body == Poison.encode!(%{response: "Account created, the number is #{created_account.id}"})
   end
 
-  test "it returns 422 with an invalid payload" do
+  test "it returns 422 with an blank payload" do
     # Create a test connection
     conn = conn(:post, "/sign_up", %{})
 
@@ -44,7 +44,22 @@ defmodule Challenge.RouterTest do
 
     # Assert the response
     assert conn.status == 422
-    assert conn.resp_body == Poison.encode!(%{error: "Expected Payload: { 'account': {...} }"})
+    assert conn.resp_body == Poison.encode!(%{error: "Expected Payload: { 'email': '', 'password': '' }"})
+  end
+
+  test "it returns 422 with non unique email" do
+    hash = %{email: "123@email.com", encrypted_password: "1234"}
+
+    {result, record} = Account.sign_up(hash)
+
+    # Create a test connection
+    conn = conn(:post, "/sign_up", %{email: "123@email.com", password: "1234"})
+
+    # Invoke the plug
+    conn = Router.call(conn, @opts)
+
+    assert conn.status == 422
+    assert conn.resp_body == Poison.encode!(%{errors: %{email: ["has already been taken"]}})
   end
 
   test "it returns 404 when no route matches" do

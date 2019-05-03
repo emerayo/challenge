@@ -39,14 +39,14 @@ defmodule Challenge.Router do
     {status, body} =
       case Account.sign_up(hash) do
         {:ok, record}       -> {201, %{response: "Account created, the number is #{record.id}"}}
-        {:error, changeset} -> {404, %{errors: Account.changeset_error_to_string(changeset)}}
+        {:error, changeset} -> {422, %{errors: Account.changeset_error_to_string(changeset)}}
       end
 
     {status, body}
   end
 
   defp missing_account do
-    %{error: "Expected Payload: { 'account': {...} }"}
+    %{error: "Expected Payload: { 'email': '', 'password': '' }"}
   end
 
   defp render_json(conn, status, data) do

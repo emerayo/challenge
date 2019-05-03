@@ -7,7 +7,7 @@ defmodule Challenge.AccounTest do
   test "insert the account in database" do
     hash = %{email: "new_email@email.com", encrypted_password: "1234"}
 
-    # Invoke the plug
+    # Create the account
     {result, record} = Account.sign_up(hash)
 
     # Find the created account
