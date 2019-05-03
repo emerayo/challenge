@@ -16,15 +16,6 @@ defmodule Challenge.Router do
   plug :match
   plug :dispatch
 
-  def init(options) do
-    options
-  end
-
-  def start_link do
-    port = Application.fetch_env!(:challenge, :port)
-    {:ok, _} = Cowboy.http(__MODULE__, [], port: port)
-  end
-
   # A simple route to test that the server is up
   # Note, all routes must return a connection as per the Plug spec.
   get "/" do
