@@ -35,7 +35,8 @@ defmodule Challenge.MixProject do
     [
       "ecto.setup": ["ecto.create", "ecto.migrate"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
-      tests: ["ecto.drop --quiet", "ecto.create --quiet", "ecto.migrate --quiet", "ecto.migrate", "test"]
+      "ecto.seed": ["run priv/repo/seeds.exs"],
+      tests: ["ecto.drop --quiet", "ecto.create --quiet", "ecto.migrate --quiet", "test"]
     ]
   end
 end
