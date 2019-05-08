@@ -22,7 +22,7 @@ defmodule Challenge.Router do
   end
 
   # Handle the sign_up for a new account
-  post "/sign_up" do
+  post "/v1/sign_up" do
     {status, body} =
       case conn.body_params do
         %{"email" => email, "password" => password} -> sing_up(email, password)

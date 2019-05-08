@@ -26,7 +26,7 @@ defmodule Challenge.RouterTest do
 
   test "it returns 200 with a valid payload" do
     # Create a test connection
-    conn = conn(:post, "/sign_up", %{email: "email@email.com", password: "1234"})
+    conn = conn(:post, "/v1/sign_up", %{email: "email@email.com", password: "1234"})
     |> put_req_header("authorization", "Basic YWRtaW5AYmFua2FwaS5jb206MTIzNA==")
 
     # Invoke the plug
@@ -42,7 +42,7 @@ defmodule Challenge.RouterTest do
 
   test "it returns 422 with an blank payload" do
     # Create a test connection
-    conn = conn(:post, "/sign_up", %{})
+    conn = conn(:post, "/v1/sign_up", %{})
     |> put_req_header("authorization", "Basic YWRtaW5AYmFua2FwaS5jb206MTIzNA==")
 
     # Invoke the plug
@@ -59,7 +59,7 @@ defmodule Challenge.RouterTest do
     Account.sign_up(hash)
 
     # Create a test connection
-    conn = conn(:post, "/sign_up", %{email: "123@email.com", password: "1234"})
+    conn = conn(:post, "/v1/sign_up", %{email: "123@email.com", password: "1234"})
     |> put_req_header("authorization", "Basic YWRtaW5AYmFua2FwaS5jb206MTIzNA==")
 
     # Invoke the plug
@@ -71,7 +71,7 @@ defmodule Challenge.RouterTest do
 
   test "it returns 404 when no route matches" do
     # Create a test connection
-    conn = conn(:get, "/fail")
+    conn = conn(:get, "/v1/fail")
     |> put_req_header("authorization", "Basic YWRtaW5AYmFua2FwaS5jb206MTIzNA==")
 
     # Invoke the plug
