@@ -7,6 +7,7 @@ defmodule Challenge.Account do
   import Ecto.Changeset
   alias Challenge.Account
   alias Challenge.Repo
+  alias Challenge.Transaction
   alias Ecto.Changeset
 
   schema "accounts" do
@@ -14,11 +15,12 @@ defmodule Challenge.Account do
     field(:email, :string)
     field(:encrypted_password, :string)
     field(:password, :string, virtual: true)
+    has_many :transactions, Transaction
 
     timestamps()
   end
 
-  def registration_changeset(account, params) do
+  def changeset(account, params) do
     account
     |> cast(params, [:email, :encrypted_password])
     |> validate_required([:email, :encrypted_password])
@@ -27,7 +29,7 @@ defmodule Challenge.Account do
 
   def sign_up(params) do
     %Account{}
-    |> Account.registration_changeset(params)
+    |> Account.changeset(params)
     |> Repo.insert()
   end
 

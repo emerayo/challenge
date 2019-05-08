@@ -1,4 +1,4 @@
-defmodule Challenge.AccounTest do
+defmodule Challenge.AccountTest do
   use ExUnit.Case, async: true
   use Plug.Test
   alias Challenge.Account
