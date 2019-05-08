@@ -17,11 +17,7 @@ defmodule Challenge.Authentication do
   end
 
   def verify_account(attempted_auth) do
-    {email, password} = decode_auth(attempted_auth)
-
-    result = Repo.get_by Account, %{email: email, encrypted_password: password}
-
-    result != nil
+    find_account(attempted_auth) != nil
   end
 
   def decode_auth(attempted_auth) do
@@ -31,6 +27,12 @@ defmodule Challenge.Authentication do
     password = Enum.at(splitted, 1)
 
     {email, password}
+  end
+
+  def find_account(attempted_auth) do
+    {email, password} = decode_auth(attempted_auth)
+
+    Repo.get_by Account, %{email: email, encrypted_password: password}
   end
 
   def call(conn, _opts) do

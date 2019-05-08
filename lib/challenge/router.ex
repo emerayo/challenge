@@ -6,6 +6,8 @@ defmodule Challenge.Router do
 
   alias Challenge.Account
   alias Challenge.Authentication
+  alias Challenge.Repo
+  alias Challenge.Transaction
 
   use Plug.Router
   require Logger
@@ -37,7 +39,7 @@ defmodule Challenge.Router do
     {status, body} =
       case Account.sign_up(hash) do
         {:ok, record}       -> {201, %{response: "Account created, the number is #{record.id}"}}
-        {:error, changeset} -> {422, %{errors: Account.changeset_error_to_string(changeset)}}
+        {:error, changeset} -> {422, %{errors: Repo.changeset_error_to_string(changeset)}}
       end
 
     {status, body}
@@ -45,6 +47,35 @@ defmodule Challenge.Router do
 
   defp missing_account do
     %{error: "Expected Payload: { 'email': '', 'password': '' }"}
+  end
+
+  # Handle the sign_up for a new account
+  post "/v1/withdrawal" do
+    account = authenticated_account(conn)
+    {status, body} =
+      case conn.body_params do
+        %{"value" => value} -> withdrawal(value, account)
+        _ -> {422, %{error: "Expected Payload: { 'value': '123' }"}}
+      end
+
+    render_json(conn, status, body)
+  end
+
+  defp authenticated_account(conn) do
+    case get_req_header(conn, "authorization") do
+      ["Basic " <> attempted_auth] -> Authentication.find_account(attempted_auth)
+    end
+  end
+
+  defp withdrawal(value, account) do
+    hash = %{value: Decimal.new(value), origin_id: account.id}
+    {status, body} =
+      case Transaction.withdrawal(hash, account) do
+        {:ok, _record}       -> {201, %{response: "Withdrawal successful"}}
+        {:error, changeset} -> {422, %{errors: Repo.changeset_error_to_string(changeset)}}
+      end
+
+    {status, body}
   end
 
   defp render_json(conn, status, data) do
