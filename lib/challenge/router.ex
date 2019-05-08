@@ -5,25 +5,24 @@ defmodule Challenge.Router do
   """
 
   alias Challenge.Account
+  alias Challenge.Authentication
   alias Plug.Adapters.Cowboy
 
   use Plug.Router
   require Logger
 
   plug Plug.Logger
-  # NOTE: The line below is only necessary if you care about parsing JSON
   plug Plug.Parsers, parsers: [:json], json_decoder: Poison
+  plug Authentication # run authentication
   plug :match
   plug :dispatch
 
-  # A simple route to test that the server is up
-  # Note, all routes must return a connection as per the Plug spec.
+  # Welcome route
   get "/" do
     render_json(conn, 200, %{response: "Welcome to our Bank API"})
   end
 
-  # Handle incoming events, if the payload is the right shape, process the
-  # events, otherwise return an error.
+  # Handle the sign_up for a new account
   post "/sign_up" do
     {status, body} =
       case conn.body_params do
