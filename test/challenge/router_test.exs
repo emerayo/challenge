@@ -21,7 +21,7 @@ defmodule Challenge.RouterTest do
     # Assert the response and status
     assert conn.state == :sent
     assert conn.status == 200
-    assert conn.resp_body == Poison.encode!(%{response: "Welcome to our Bank API"})
+    assert conn.resp_body == Poison.encode!(%{response: "Welcome to our Bank API. Check our API documentation to learn about: https://documenter.getpostman.com/view/7390087/S1LvX9HK"})
   end
 
   test "it returns 200 with a valid payload" do
@@ -91,6 +91,6 @@ defmodule Challenge.RouterTest do
 
     # Assert the response
     assert conn.status == 401
-    assert conn.resp_body == Poison.encode!(%{error: "Unauthorized"})
+    assert conn.resp_body == Poison.encode!(%{error: "Unauthorized. Check our API documentation to learn about: https://documenter.getpostman.com/view/7390087/S1LvX9HK"})
   end
 end

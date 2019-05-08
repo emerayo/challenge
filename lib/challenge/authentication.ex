@@ -37,7 +37,7 @@ defmodule Challenge.Authentication do
     if authenticated?(conn) do
       conn
     else
-      body = Poison.encode!(%{error: "Unauthorized"})
+      body = Poison.encode!(%{error: "Unauthorized. Check our API documentation to learn about: https://documenter.getpostman.com/view/7390087/S1LvX9HK"})
 
       conn
       |> put_resp_content_type("application/json")

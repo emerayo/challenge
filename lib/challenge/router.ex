@@ -18,7 +18,7 @@ defmodule Challenge.Router do
 
   # Welcome route
   get "/" do
-    render_json(conn, 200, %{response: "Welcome to our Bank API"})
+    render_json(conn, 200, %{response: "Welcome to our Bank API. Check our API documentation to learn about: https://documenter.getpostman.com/view/7390087/S1LvX9HK"})
   end
 
   # Handle the sign_up for a new account
