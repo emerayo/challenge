@@ -6,7 +6,6 @@ defmodule Challenge.Router do
 
   alias Challenge.Account
   alias Challenge.Authentication
-  alias Plug.Adapters.Cowboy
 
   use Plug.Router
   require Logger

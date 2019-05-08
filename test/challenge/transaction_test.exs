@@ -1,11 +1,12 @@
 defmodule Challenge.TransactionTest do
   use ExUnit.Case, async: true
   use Plug.Test
+  alias Challenge.Account
   alias Challenge.Repo
   alias Challenge.Transaction
 
   test "insert the withdrawal in database" do
-    origin = Challenge.Repo.get Challenge.Account, 1
+    origin = Repo.get Account, 1
     value = Decimal.new("123")
     hash = %{value: value, origin_id: origin.id}
 
@@ -22,8 +23,8 @@ defmodule Challenge.TransactionTest do
   end
 
   test "insert the transaction in database" do
-    origin = Challenge.Repo.get Challenge.Account, 2
-    destination = Challenge.Repo.get Challenge.Account, 2
+    origin = Repo.get Account, 2
+    destination = Repo.get Account, 2
     value = Decimal.new("123")
     hash = %{value: value, origin_id: origin.id, destination_id: destination.id}
 

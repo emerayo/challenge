@@ -1,4 +1,8 @@
 defmodule Challenge.Authentication do
+  @moduledoc """
+  Responsible for handling API authentication
+  """
+
   import Plug.Conn
   alias Challenge.Account
   alias Challenge.Repo

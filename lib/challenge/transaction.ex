@@ -20,7 +20,7 @@ defmodule Challenge.Transaction do
   def withdrawal_changeset(transaction, params) do
     transaction
     |> cast(params, [:origin_id, :value])
-	|> cast_assoc(:origin)
+    |> cast_assoc(:origin)
     |> validate_required([:origin_id, :value])
   end
 
@@ -33,8 +33,8 @@ defmodule Challenge.Transaction do
   def transfer_changeset(transaction, params) do
     transaction
     |> cast(params, [:origin_id, :destination_id, :value])
-  	|> cast_assoc(:origin)
-  	|> cast_assoc(:destination)
+    |> cast_assoc(:origin)
+    |> cast_assoc(:destination)
     |> validate_required([:origin_id, :destination_id, :value])
   end
 
