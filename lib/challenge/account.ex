@@ -7,7 +7,6 @@ defmodule Challenge.Account do
   import Ecto.Changeset
   alias Challenge.Account
   alias Challenge.Repo
-  alias Challenge.Transaction
   alias Ecto.Changeset
 
   schema "accounts" do
@@ -15,7 +14,6 @@ defmodule Challenge.Account do
     field(:email, :string)
     field(:encrypted_password, :string)
     field(:password, :string, virtual: true)
-    has_many :transactions, Transaction
 
     timestamps()
   end
