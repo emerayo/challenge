@@ -98,7 +98,7 @@ defmodule Challenge.RouterTest do
     end
 
     test "it returns 422 with a value bigger than balance" do
-      {_result, account} = %Account{email: "new_balance1@user.com", encrypted_password: "4321"} |> Repo.insert()
+      %Account{email: "new_balance1@user.com", encrypted_password: "4321"} |> Repo.insert()
       # Create a test connection
       conn = conn(:post, "/v1/withdrawal", %{value: "3321"})
       |> put_req_header("authorization", "Basic bmV3X2JhbGFuY2UxQHVzZXIuY29tOjQzMjE=")
@@ -141,7 +141,7 @@ defmodule Challenge.RouterTest do
     end
 
     test "it returns 422 with a value bigger than balance" do
-      {_result, account} = %Account{email: "new_transfer2@user.com", encrypted_password: "4321"} |> Repo.insert()
+      %Account{email: "new_transfer2@user.com", encrypted_password: "4321"} |> Repo.insert()
       {_result, destination} = %Account{email: "new_transfer3@user.com", encrypted_password: "4321"} |> Repo.insert()
       # Create a test connection
       conn = conn(:post, "/v1/transfer", %{value: "3321", destination: destination.id})

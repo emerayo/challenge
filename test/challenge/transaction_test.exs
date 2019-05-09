@@ -31,9 +31,6 @@ defmodule Challenge.TransactionTest do
       # Create the transaction
       {result, record} = Transaction.withdrawal(hash, account)
 
-      # Find the created transaction
-      created_transaction = Repo.get_by Transaction, %{value: value, origin_id: account.id}
-
       assert result == :error
       assert record.errors == [value: {"invalid value, should be less than balance $1000", []}]
     end
@@ -75,8 +72,6 @@ defmodule Challenge.TransactionTest do
       {_result, account} = %Account{email: "new_balance5@user.com", encrypted_password: "4321"} |> Repo.insert()
       value = Decimal.new("2222")
       hash = %{value: value, origin_id: account.id, destination_id: account.id}
-
-      IO.inspect hash
 
       # Create the transaction
       {result, record} = Transaction.transfer(hash, account)
