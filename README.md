@@ -2,23 +2,24 @@
 
 A small bank API system made for a challenge
 
-### About
+## About
 
 This project was written in Elixir and using Cowboy for handling the HTTP requests and Ecto for managing the database.
 
 The features are: sign_up, withdrawal, transfer money and see all transactions.
 
-### Dependencies
+## Dependencies
 
-* [Elixir](https://elixir-lang.org/install.html) - 1.8.1
+*  [Elixir](https://elixir-lang.org/install.html) - 1.8.1
+*  [Postgres](https://www.postgresql.org/docs/10/tutorial-install.html) - 10
 
-* [Postgres](https://www.postgresql.org/docs/10/tutorial-install.html) - 10
+## Development
 
 ### Setup for development
 
 First of all, need to export  your environment variables accordingly to your system setup.
 
-```
+```bash
 
 $ export DATABASE_URL='ecto://postgres:postgres@localhost/challenge_repo'
 $ export PORT='8080'
@@ -27,7 +28,7 @@ $ export PORT='8080'
 
 Install all code dependencies:
 
-```
+```bash
 
 $ mix deps.get
 
@@ -35,7 +36,7 @@ $ mix deps.get
 
 Create the database and run all migrations:
 
-```
+```bash
 
 $ mix ecto:setup
 
@@ -45,7 +46,7 @@ $ mix ecto:setup
 
 Simply run the command below:
 
-```
+```bash
 
 $ mix run --no-halt
 
@@ -61,7 +62,7 @@ To run the tests suite, pass your environment variables and run this command:
 
 Make sure to add `_test` to your database name so it will not affect your development database.
 
-```
+```bash
 
 $ MIX_ENV=test PORT=8080 DATABASE_URL='ecto://postgres:postgres@localhost/challenge_repo_test' mix tests
 
@@ -71,7 +72,7 @@ $ MIX_ENV=test PORT=8080 DATABASE_URL='ecto://postgres:postgres@localhost/challe
 
 To run [Credo](https://github.com/rrrene/credo) and make sure the code is consistent, run this command:
 
-```
+```bash
 
 $ mix credo --strict
 
@@ -81,7 +82,7 @@ $ mix credo --strict
 
 First, make sure you have Heroku properly configured in your machine, then add the Heroku repository:
 
-```
+```bash
 
 $ heroku git:remote -a bank-api-merayo
 
@@ -89,7 +90,7 @@ $ heroku git:remote -a bank-api-merayo
 
 After committing your changes and pushing it to master, run this command:
 
-```
+```bash
 
 $ git push heroku master
 
@@ -97,7 +98,7 @@ $ git push heroku master
 
 If you added a migration, run the migration in Heroku:
 
-```
+```bash
 
 $ heroku run "mix ecto.migrate"
 
