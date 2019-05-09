@@ -142,8 +142,9 @@ defmodule Challenge.RouterTest do
 
     test "it returns 422 with a value bigger than balance" do
       {_result, account} = %Account{email: "new_transfer2@user.com", encrypted_password: "4321"} |> Repo.insert()
+      {_result, destination} = %Account{email: "new_transfer3@user.com", encrypted_password: "4321"} |> Repo.insert()
       # Create a test connection
-      conn = conn(:post, "/v1/transfer", %{value: "3321", destination: account.id})
+      conn = conn(:post, "/v1/transfer", %{value: "3321", destination: destination.id})
       |> put_req_header("authorization", "Basic bmV3X3RyYW5zZmVyMkB1c2VyLmNvbTo0MzIx")
 
       # Invoke the plug
@@ -152,6 +153,20 @@ defmodule Challenge.RouterTest do
       # Assert the response
       assert conn.status == 422
       assert conn.resp_body == Poison.encode!(%{errors: %{value: ["invalid value, should be less than balance $1000"]}})
+    end
+
+    test "it returns 422 with same destination as origin" do
+      account = Repo.get_by Account, %{email: "admin@bankapi.com", encrypted_password: "1234"}
+      # Create a test connection
+      conn = conn(:post, "/v1/transfer", %{value: "3321", destination: account.id})
+      |> put_req_header("authorization", "Basic YWRtaW5AYmFua2FwaS5jb206MTIzNA==")
+
+      # Invoke the plug
+      conn = Router.call(conn, @opts)
+
+      # Assert the response
+      assert conn.status == 422
+      assert conn.resp_body == Poison.encode!(%{errors: %{destination: ["invalid value, you can not transfer to yourself"]}})
     end
   end
 

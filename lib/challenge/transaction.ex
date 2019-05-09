@@ -43,7 +43,11 @@ defmodule Challenge.Transaction do
   def transfer(params, origin) do
     changeset = %Transaction{} |> Transaction.transfer_changeset(params)
 
-    insert_transaction(changeset, origin, params.value)
+    if params.destination_id == params.origin_id do
+      {:error, Changeset.add_error(changeset, :destination, "invalid value, you can not transfer to yourself")}
+    else
+      insert_transaction(changeset, origin, params.value)
+    end
   end
 
   def insert_transaction(changeset, origin, value) do

@@ -41,7 +41,7 @@ defmodule Challenge.TransactionTest do
 
   describe "transfer" do
     test "insert a transfer in database" do
-      origin = Repo.get Account, 2
+      origin = Repo.get Account, 1
       destination = Repo.get Account, 2
       value = Decimal.new("123")
       hash = %{value: value, origin_id: origin.id, destination_id: destination.id}
@@ -67,11 +67,22 @@ defmodule Challenge.TransactionTest do
       # Create the transaction
       {result, record} = Transaction.transfer(hash, account)
 
-      # Find the created transaction
-      created_transaction = Repo.get_by Transaction, %{value: value, origin_id: account.id, destination_id: destination.id}
-
       assert result == :error
       assert record.errors == [value: {"invalid value, should be less than balance $1000", []}]
+    end
+
+    test "pass the same account to destination, should return error" do
+      {_result, account} = %Account{email: "new_balance5@user.com", encrypted_password: "4321"} |> Repo.insert()
+      value = Decimal.new("2222")
+      hash = %{value: value, origin_id: account.id, destination_id: account.id}
+
+      IO.inspect hash
+
+      # Create the transaction
+      {result, record} = Transaction.transfer(hash, account)
+
+      assert result == :error
+      assert record.errors == [destination: {"invalid value, you can not transfer to yourself", []}]
     end
   end
 
