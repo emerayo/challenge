@@ -108,7 +108,7 @@ defmodule Challenge.RouterTest do
 
       # Assert the response
       assert conn.status == 422
-      assert conn.resp_body == Poison.encode!(%{errors: %{value: ["invalid value, should be less than value"]}})
+      assert conn.resp_body == Poison.encode!(%{errors: %{value: ["invalid value, should be less than balance $1000"]}})
     end
   end
 

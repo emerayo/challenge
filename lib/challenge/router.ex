@@ -49,7 +49,7 @@ defmodule Challenge.Router do
     %{error: "Expected Payload: { 'email': '', 'password': '' }"}
   end
 
-  # Handle the sign_up for a new account
+  # Handle the withdrawal from an account
   post "/v1/withdrawal" do
     account = authenticated_account(conn)
     {status, body} =
@@ -78,6 +78,7 @@ defmodule Challenge.Router do
     {status, body}
   end
 
+  # Format the response to json
   defp render_json(conn, status, data) do
     body = Poison.encode!(data)
 

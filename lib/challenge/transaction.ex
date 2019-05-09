@@ -50,7 +50,7 @@ defmodule Challenge.Transaction do
       changeset
       |> Repo.insert()
     else
-      {:error, Changeset.add_error(changeset, :value, "invalid value, should be less than value")}
+      {:error, Changeset.add_error(changeset, :value, "invalid value, should be less than balance $#{balance}")}
     end
   end
 

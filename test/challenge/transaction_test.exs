@@ -35,7 +35,7 @@ defmodule Challenge.TransactionTest do
       created_transaction = Repo.get_by Transaction, %{value: value, origin_id: origin.id}
 
       assert result == :error
-      assert record.errors == [value: {"invalid value, should be less than value", []}]
+      assert record.errors == [value: {"invalid value, should be less than balance $1000", []}]
     end
   end
 
@@ -71,7 +71,7 @@ defmodule Challenge.TransactionTest do
       created_transaction = Repo.get_by Transaction, %{value: value, origin_id: origin.id, destination_id: destination.id}
 
       assert result == :error
-      assert record.errors == [value: {"invalid value, should be less than value", []}]
+      assert record.errors == [value: {"invalid value, should be less than balance $1000", []}]
     end
   end
 end

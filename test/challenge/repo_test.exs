@@ -34,7 +34,7 @@ defmodule Challenge.RepoTest do
       {_result, record} = Transaction.withdrawal(hash, origin)
       parsed_errors = Repo.changeset_error_to_string(record)
 
-      assert parsed_errors == %{value: ["invalid value, should be less than value"]}
+      assert parsed_errors == %{value: ["invalid value, should be less than balance $1000"]}
     end
   end
 end
