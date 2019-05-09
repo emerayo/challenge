@@ -50,7 +50,7 @@ defmodule Challenge.Transaction do
     if valid_value(origin.balance, value) do
       case (Repo.insert(changeset)) do
         {:ok, record}       ->
-          Account.update_balance(origin, value)
+          Account.update_balance(origin, Decimal.sub(origin.balance, value))
           {:ok, record}
         {:error, changeset} -> {422, %{errors: Repo.changeset_error_to_string(changeset)}}
       end
