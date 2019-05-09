@@ -5,6 +5,7 @@ defmodule Challenge.Transaction do
 
   use Ecto.Schema
   import Ecto.Changeset
+  import Ecto.Query
   alias Challenge.Account
   alias Challenge.Repo
   alias Challenge.Transaction
@@ -61,5 +62,17 @@ defmodule Challenge.Transaction do
   def valid_value(balance, value) do
     result = Decimal.cmp(Decimal.sub(balance, value), Decimal.new("0"))
     result == :eq || result == :gt
+  end
+
+  def sum_all_values do
+    query = from(t in Transaction, select: sum(t.value))
+    result = Repo.all(query)
+    result = Enum.at(result, 0)
+
+    if result == nil do
+      Decimal.new("0")
+    else
+      result
+    end
   end
 end

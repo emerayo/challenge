@@ -74,4 +74,27 @@ defmodule Challenge.TransactionTest do
       assert record.errors == [value: {"invalid value, should be less than balance $1000", []}]
     end
   end
+
+  describe "sum_all_values" do
+    test "with no transactions in database" do
+      Repo.delete_all(Transaction)
+
+      result = Transaction.sum_all_values
+
+      assert result == Decimal.new("0")
+    end
+
+    test "with transactions in database" do
+      Repo.delete_all(Transaction)
+
+      origin = Repo.get Account, 2
+      value = Decimal.new("123")
+
+      %Transaction{value: value, origin_id: origin.id} |> Repo.insert!()
+
+      result = Transaction.sum_all_values
+
+      assert result == value
+    end
+  end
 end
