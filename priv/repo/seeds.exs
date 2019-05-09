@@ -6,5 +6,5 @@ password = "1234"
 result = Repo.get_by Account, %{email: email, encrypted_password: password}
 
 if result == nil do
-  %Account{email: email, encrypted_password: password} |> Repo.insert!()
+  %Account{email: email, encrypted_password: password, admin: true} |> Repo.insert!()
 end

@@ -13,7 +13,7 @@ defmodule Challenge.Account do
     field(:balance, :decimal, default: Decimal.new(1000))
     field(:email, :string)
     field(:encrypted_password, :string)
-    field(:password, :string, virtual: true)
+    field(:admin, :boolean, default: false)
 
     timestamps()
   end
