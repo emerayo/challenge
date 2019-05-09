@@ -4,23 +4,26 @@ defmodule Challenge.RouterTest do
   alias Challenge.Account
   alias Challenge.Repo
   alias Challenge.Router
+  alias Challenge.Transaction
 
   @opts Challenge.Router.init([])
 
   # Basic auth header for user created in test/test_seeds.exs
   # Basic YWRtaW5AYmFua2FwaS5jb206MTIzNA==
 
-  test "it returns the welcome message" do
-    # Create a test connection
-    conn = conn(:get, "/")
+  describe "GET home" do
+    test "it returns the welcome message" do
+      # Create a test connection
+      conn = conn(:get, "/")
 
-    # Invoke the plug
-    conn = Router.call(conn, @opts)
+      # Invoke the plug
+      conn = Router.call(conn, @opts)
 
-    # Assert the response and status
-    assert conn.state == :sent
-    assert conn.status == 200
-    assert conn.resp_body == Poison.encode!(%{response: "Welcome to our Bank API. Check our API documentation to learn about: https://documenter.getpostman.com/view/7390087/S1LvX9HK"})
+      # Assert the response and status
+      assert conn.state == :sent
+      assert conn.status == 200
+      assert conn.resp_body == Poison.encode!(%{response: "Welcome to our Bank API. Check our API documentation to learn about: https://documenter.getpostman.com/view/7390087/S1LvX9HK"})
+    end
   end
 
   describe "POST sign_up" do
@@ -109,7 +112,6 @@ defmodule Challenge.RouterTest do
     end
   end
 
-
   describe "POST transfer" do
     test "it returns 201 with an blank payload" do
       {_result, account} = %Account{email: "new_transfer1@user.com", encrypted_password: "4321"} |> Repo.insert()
@@ -150,6 +152,45 @@ defmodule Challenge.RouterTest do
       # Assert the response
       assert conn.status == 422
       assert conn.resp_body == Poison.encode!(%{errors: %{value: ["invalid value, should be less than balance $1000"]}})
+    end
+  end
+
+  describe "GET report" do
+    test "it returns 200 and sum equal zero when no transaction is in database" do
+      # Remove all transactions
+      Repo.delete_all(Transaction)
+
+      # Create a test connection
+      conn = conn(:get, "/v1/report")
+      |> put_req_header("authorization", "Basic YWRtaW5AYmFua2FwaS5jb206MTIzNA==")
+
+      # Invoke the plug
+      conn = Router.call(conn, @opts)
+
+      # Assert the response
+      assert conn.status == 200
+      assert conn.resp_body == Poison.encode!(%{response: "Sum of all transactions is: 0"})
+    end
+
+    test "it returns 200 and the sum when there are transactions in database" do
+      # Remove all transactions
+      Repo.delete_all(Transaction)
+
+      # Create transaction
+      origin = Repo.get Account, 2
+      value = Decimal.new("123")
+      %Transaction{value: value, origin_id: origin.id} |> Repo.insert!()
+
+      # Create a test connection
+      conn = conn(:get, "/v1/report")
+      |> put_req_header("authorization", "Basic YWRtaW5AYmFua2FwaS5jb206MTIzNA==")
+
+      # Invoke the plug
+      conn = Router.call(conn, @opts)
+
+      # Assert the response
+      assert conn.status == 200
+      assert conn.resp_body == Poison.encode!(%{response: "Sum of all transactions is: 123"})
     end
   end
 

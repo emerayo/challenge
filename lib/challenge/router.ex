@@ -61,12 +61,6 @@ defmodule Challenge.Router do
     render_json(conn, status, body)
   end
 
-  defp authenticated_account(conn) do
-    case get_req_header(conn, "authorization") do
-      ["Basic " <> attempted_auth] -> Authentication.find_account(attempted_auth)
-    end
-  end
-
   defp withdrawal(value, account) do
     hash = %{value: Decimal.new(value), origin_id: account.id}
     {status, body} =
@@ -99,6 +93,18 @@ defmodule Challenge.Router do
       end
 
     {status, body}
+  end
+
+  defp authenticated_account(conn) do
+    case get_req_header(conn, "authorization") do
+      ["Basic " <> attempted_auth] -> Authentication.find_account(attempted_auth)
+    end
+  end
+
+  get "/v1/report" do
+    body = %{response: "Sum of all transactions is: #{Transaction.sum_all_values}"}
+
+    render_json(conn, 200, body)
   end
 
   # Format the response to json
