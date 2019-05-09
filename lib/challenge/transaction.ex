@@ -28,7 +28,7 @@ defmodule Challenge.Transaction do
   def withdrawal(params, origin) do
     changeset = %Transaction{} |> Transaction.withdrawal_changeset(params)
 
-    insert_transaction(changeset, origin.balance, params.value)
+    insert_transaction(changeset, origin, params.value)
   end
 
   def transfer_changeset(transaction, params) do
@@ -42,15 +42,19 @@ defmodule Challenge.Transaction do
   def transfer(params, origin) do
     changeset = %Transaction{} |> Transaction.transfer_changeset(params)
 
-    insert_transaction(changeset, origin.balance, params.value)
+    insert_transaction(changeset, origin, params.value)
   end
 
-  def insert_transaction(changeset, balance, value) do
-    if valid_value(balance, value) do
-      changeset
-      |> Repo.insert()
+  def insert_transaction(changeset, origin, value) do
+    if valid_value(origin.balance, value) do
+      case (Repo.insert(changeset)) do
+        {:ok, record}       ->
+          Account.update_balance(origin, value)
+          {:ok, record}
+        {:error, changeset} -> {422, %{errors: Repo.changeset_error_to_string(changeset)}}
+      end
     else
-      {:error, Changeset.add_error(changeset, :value, "invalid value, should be less than balance $#{balance}")}
+      {:error, Changeset.add_error(changeset, :value, "invalid value, should be less than balance $#{origin.balance}")}
     end
   end
 

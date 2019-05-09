@@ -7,32 +7,32 @@ defmodule Challenge.TransactionTest do
 
   describe "withdrawal" do
     test "insert a withdrawal in database" do
-      origin = Repo.get Account, 1
+      {_result, account} = %Account{email: "new_balance2@user.com", encrypted_password: "4321"} |> Repo.insert()
       value = Decimal.new("123")
-      hash = %{value: value, origin_id: origin.id}
+      hash = %{value: value, origin_id: account.id}
 
       # Create the transaction
-      {result, record} = Transaction.withdrawal(hash, origin)
+      {result, record} = Transaction.withdrawal(hash, account)
 
       # Find the created transaction
-      created_transaction = Repo.get_by Transaction, %{value: value, origin_id: origin.id}
+      created_transaction = Repo.get_by Transaction, %{value: value, origin_id: account.id}
 
       assert result == :ok
       assert record == created_transaction
-      assert created_transaction.origin_id == origin.id
+      assert created_transaction.origin_id == account.id
       assert created_transaction.destination_id == nil
     end
 
     test "pass a grater number than balance to withdrawal in database" do
-      origin = Repo.get Account, 1
+      {_result, account} = %Account{email: "new_balance3@user.com", encrypted_password: "4321"} |> Repo.insert()
       value = Decimal.new("1123")
-      hash = %{value: value, origin_id: origin.id}
+      hash = %{value: value, origin_id: account.id}
 
       # Create the transaction
-      {result, record} = Transaction.withdrawal(hash, origin)
+      {result, record} = Transaction.withdrawal(hash, account)
 
       # Find the created transaction
-      created_transaction = Repo.get_by Transaction, %{value: value, origin_id: origin.id}
+      created_transaction = Repo.get_by Transaction, %{value: value, origin_id: account.id}
 
       assert result == :error
       assert record.errors == [value: {"invalid value, should be less than balance $1000", []}]
@@ -59,16 +59,16 @@ defmodule Challenge.TransactionTest do
     end
 
     test "pass a grater number than balance to withdrawal in database" do
-      origin = Repo.get Account, 2
+      {_result, account} = %Account{email: "new_balance4@user.com", encrypted_password: "4321"} |> Repo.insert()
       destination = Repo.get Account, 2
       value = Decimal.new("2222")
-      hash = %{value: value, origin_id: origin.id, destination_id: destination.id}
+      hash = %{value: value, origin_id: account.id, destination_id: destination.id}
 
       # Create the transaction
-      {result, record} = Transaction.transfer(hash, origin)
+      {result, record} = Transaction.transfer(hash, account)
 
       # Find the created transaction
-      created_transaction = Repo.get_by Transaction, %{value: value, origin_id: origin.id, destination_id: destination.id}
+      created_transaction = Repo.get_by Transaction, %{value: value, origin_id: account.id, destination_id: destination.id}
 
       assert result == :error
       assert record.errors == [value: {"invalid value, should be less than balance $1000", []}]

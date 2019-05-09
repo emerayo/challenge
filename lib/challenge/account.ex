@@ -32,4 +32,10 @@ defmodule Challenge.Account do
     |> Account.changeset(params)
     |> Repo.insert()
   end
+
+  def update_balance(account, balance) do
+    account
+    |> Changeset.change(%{balance: balance})
+    |> Repo.update()
+  end
 end

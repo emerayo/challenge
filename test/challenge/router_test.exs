@@ -99,9 +99,10 @@ defmodule Challenge.RouterTest do
     end
 
     test "it returns 422 with a value bigger than balance" do
+      {_result, account} = %Account{email: "new_balance1@user.com", encrypted_password: "4321"} |> Repo.insert()
       # Create a test connection
       conn = conn(:post, "/v1/withdrawal", %{value: "3321"})
-      |> put_req_header("authorization", "Basic YWRtaW5AYmFua2FwaS5jb206MTIzNA==")
+      |> put_req_header("authorization", "Basic bmV3X2JhbGFuY2UxQHVzZXIuY29tOjQzMjE=")
 
       # Invoke the plug
       conn = Router.call(conn, @opts)
