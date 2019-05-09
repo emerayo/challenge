@@ -102,9 +102,15 @@ defmodule Challenge.Router do
   end
 
   get "/v1/report" do
-    body = %{response: "Sum of all transactions is: #{Transaction.sum_all_values}"}
+    account = authenticated_account(conn)
 
-    render_json(conn, 200, body)
+    {status, body} =
+      case account.admin == true do
+        true       -> {200, %{response: "Sum of all transactions is: #{Transaction.sum_all_values}"}}
+        false -> {401, %{error: "Unauthorized"}}
+      end
+
+    render_json(conn, status, body)
   end
 
   # Format the response to json

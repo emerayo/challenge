@@ -207,6 +207,19 @@ defmodule Challenge.RouterTest do
       assert conn.status == 200
       assert conn.resp_body == Poison.encode!(%{response: "Sum of all transactions is: 123"})
     end
+
+    test "it returns 401 for non admin acount" do
+      # Create a test connection
+      conn = conn(:get, "/v1/report")
+      |> put_req_header("authorization", "Basic dXNlckB1c2Vycy5jb206NDMyMQ==")
+
+      # Invoke the plug
+      conn = Router.call(conn, @opts)
+
+      # Assert the response
+      assert conn.status == 401
+      assert conn.resp_body == Poison.encode!(%{error: "Unauthorized"})
+    end
   end
 
   test "it returns 404 when no route matches" do
