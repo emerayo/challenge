@@ -78,6 +78,29 @@ defmodule Challenge.Router do
     {status, body}
   end
 
+  # Handle the transfer between accounts
+  post "/v1/transfer" do
+    account = authenticated_account(conn)
+    {status, body} =
+      case conn.body_params do
+        %{"value" => value, "destination" => destination_id} -> transfer(value, destination_id, account)
+        _ -> {422, %{error: "Expected Payload: { 'value': '123', 'destination': '1' }"}}
+      end
+
+    render_json(conn, status, body)
+  end
+
+  defp transfer(value, destination_id, account) do
+    hash = %{value: Decimal.new(value), origin_id: account.id, destination_id: destination_id}
+    {status, body} =
+      case Transaction.transfer(hash, account) do
+        {:ok, _record}       -> {201, %{response: "Transfer successful"}}
+        {:error, changeset} -> {422, %{errors: Repo.changeset_error_to_string(changeset)}}
+      end
+
+    {status, body}
+  end
+
   # Format the response to json
   defp render_json(conn, status, data) do
     body = Poison.encode!(data)

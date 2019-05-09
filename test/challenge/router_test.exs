@@ -109,6 +109,50 @@ defmodule Challenge.RouterTest do
     end
   end
 
+
+  describe "POST transfer" do
+    test "it returns 201 with an blank payload" do
+      {_result, account} = %Account{email: "new_transfer1@user.com", encrypted_password: "4321"} |> Repo.insert()
+      # Create a test connection
+      conn = conn(:post, "/v1/transfer", %{value: "321", destination: account.id})
+      |> put_req_header("authorization", "Basic YWRtaW5AYmFua2FwaS5jb206MTIzNA==")
+
+      # Invoke the plug
+      conn = Router.call(conn, @opts)
+
+      # Assert the response
+      assert conn.status == 201
+      assert conn.resp_body == Poison.encode!(%{response: "Transfer successful"})
+    end
+
+    test "it returns 422 with an blank payload" do
+      # Create a test connection
+      conn = conn(:post, "/v1/transfer", %{})
+      |> put_req_header("authorization", "Basic YWRtaW5AYmFua2FwaS5jb206MTIzNA==")
+
+      # Invoke the plug
+      conn = Router.call(conn, @opts)
+
+      # Assert the response
+      assert conn.status == 422
+      assert conn.resp_body == Poison.encode!(%{error: "Expected Payload: { 'value': '123', 'destination': '1' }"})
+    end
+
+    test "it returns 422 with a value bigger than balance" do
+      {_result, account} = %Account{email: "new_transfer2@user.com", encrypted_password: "4321"} |> Repo.insert()
+      # Create a test connection
+      conn = conn(:post, "/v1/transfer", %{value: "3321", destination: account.id})
+      |> put_req_header("authorization", "Basic bmV3X3RyYW5zZmVyMkB1c2VyLmNvbTo0MzIx")
+
+      # Invoke the plug
+      conn = Router.call(conn, @opts)
+
+      # Assert the response
+      assert conn.status == 422
+      assert conn.resp_body == Poison.encode!(%{errors: %{value: ["invalid value, should be less than balance $1000"]}})
+    end
+  end
+
   test "it returns 404 when no route matches" do
     # Create a test connection
     conn = conn(:get, "/v1/fail")
