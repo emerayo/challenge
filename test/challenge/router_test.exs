@@ -13,7 +13,6 @@ defmodule Challenge.RouterTest do
   test "it returns the welcome message" do
     # Create a test connection
     conn = conn(:get, "/")
-    |> put_req_header("authorization", "Basic YWRtaW5AYmFua2FwaS5jb206MTIzNA==")
 
     # Invoke the plug
     conn = Router.call(conn, @opts)
@@ -28,7 +27,6 @@ defmodule Challenge.RouterTest do
     test "it returns 201 with a valid payload" do
       # Create a test connection
       conn = conn(:post, "/v1/sign_up", %{email: "email@email.com", password: "1234"})
-      |> put_req_header("authorization", "Basic YWRtaW5AYmFua2FwaS5jb206MTIzNA==")
 
       # Invoke the plug
       conn = Router.call(conn, @opts)
@@ -44,7 +42,6 @@ defmodule Challenge.RouterTest do
     test "it returns 422 with an blank payload" do
       # Create a test connection
       conn = conn(:post, "/v1/sign_up", %{})
-      |> put_req_header("authorization", "Basic YWRtaW5AYmFua2FwaS5jb206MTIzNA==")
 
       # Invoke the plug
       conn = Router.call(conn, @opts)
@@ -61,7 +58,6 @@ defmodule Challenge.RouterTest do
 
       # Create a test connection
       conn = conn(:post, "/v1/sign_up", %{email: "123@email.com", password: "1234"})
-      |> put_req_header("authorization", "Basic YWRtaW5AYmFua2FwaS5jb206MTIzNA==")
 
       # Invoke the plug
       conn = Router.call(conn, @opts)
@@ -127,7 +123,7 @@ defmodule Challenge.RouterTest do
 
   test "it returns 401 when no correct auth is sent" do
     # Create a test connection
-    conn = conn(:get, "/")
+    conn = conn(:get, "/v1/withdrawal")
     |> put_req_header("authorization", "Basic YWRtaW46YWRtaW4=")
 
     # Invoke the plug

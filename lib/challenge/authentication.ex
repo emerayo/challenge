@@ -36,7 +36,8 @@ defmodule Challenge.Authentication do
   end
 
   def call(conn, _opts) do
-    if authenticated?(conn) do
+    path = conn.request_path
+    if authenticated?(conn) || path == "/" || path == "/v1/sign_up" do
       conn
     else
       body = Poison.encode!(%{error: "Unauthorized. Check our API documentation to learn about: https://documenter.getpostman.com/view/7390087/S1LvX9HK"})
